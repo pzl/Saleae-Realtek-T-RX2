@@ -7,13 +7,13 @@ TRX2AnalyzerSettings::TRX2AnalyzerSettings()
 	mIsTX( false )
 {
 	mInputChannelInterface.reset( new AnalyzerSettingInterfaceChannel() );
-	mInputChannelInterface->SetTitleAndTooltip( "Alpha", "Bravo" );
+	mInputChannelInterface->SetTitleAndTooltip( "Signal", "Channel to process" );
 	mInputChannelInterface->SetChannel( mInputChannel );
 
 	mIsTXInterface.reset( new AnalyzerSettingInterfaceNumberList() );
-	mIsTXInterface->SetTitleAndTooltip( "Charlie",  "Delta" );
-	mIsTXInterface->AddNumber(0, "Echo", "Foxtrot");
-	mIsTXInterface->AddNumber(1, "Golf", "Hotel");
+	mIsTXInterface->SetTitleAndTooltip( "TX or RX",  "Select Chip" );
+	mIsTXInterface->AddNumber(1, "TX", "Transmitter");
+	mIsTXInterface->AddNumber(0, "RX", "Receiver");
 	mIsTXInterface->SetNumber( mIsTX );
 
 	AddInterface( mInputChannelInterface.get() );
@@ -24,7 +24,7 @@ TRX2AnalyzerSettings::TRX2AnalyzerSettings()
 	AddExportExtension( 0, "csv", "csv" );
 
 	ClearChannels();
-	AddChannel( mInputChannel, "India", false );
+	AddChannel( mInputChannel, ((mIsTX) ? "Transmit" : "Receive"), false );
 }
 
 TRX2AnalyzerSettings::~TRX2AnalyzerSettings()
@@ -37,7 +37,7 @@ bool TRX2AnalyzerSettings::SetSettingsFromInterfaces()
 	mIsTX = mIsTXInterface->GetNumber();
 
 	ClearChannels();
-	AddChannel( mInputChannel, "Juliette", true );
+	AddChannel( mInputChannel, ((mIsTX) ? "Transmit" : "Receive"), true );
 
 	return true;
 }
@@ -57,7 +57,7 @@ void TRX2AnalyzerSettings::LoadSettings( const char* settings )
 	text_archive >> mIsTX;
 
 	ClearChannels();
-	AddChannel( mInputChannel, "Kilo", true );
+	AddChannel( mInputChannel, ((mIsTX) ? "Transmit" : "Receive"), true );
 
 	UpdateInterfacesFromSettings();
 }
