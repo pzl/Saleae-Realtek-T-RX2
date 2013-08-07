@@ -4,27 +4,27 @@
 
 TRX2AnalyzerSettings::TRX2AnalyzerSettings()
 :	mInputChannel( UNDEFINED_CHANNEL ),
-	mBitRate( 9600 )
+	mIsTX( false )
 {
 	mInputChannelInterface.reset( new AnalyzerSettingInterfaceChannel() );
-	mInputChannelInterface->SetTitleAndTooltip( "Serial", "Standard Realtek T/RX2" );
+	mInputChannelInterface->SetTitleAndTooltip( "Alpha", "Bravo" );
 	mInputChannelInterface->SetChannel( mInputChannel );
 
-	mBitRateInterface.reset( new AnalyzerSettingInterfaceInteger() );
-	mBitRateInterface->SetTitleAndTooltip( "Bit Rate (Bits/S)",  "Specify the bit rate in bits per second." );
-	mBitRateInterface->SetMax( 6000000 );
-	mBitRateInterface->SetMin( 1 );
-	mBitRateInterface->SetInteger( mBitRate );
+	mIsTXInterface.reset( new AnalyzerSettingInterfaceNumberList() );
+	mIsTXInterface->SetTitleAndTooltip( "Charlie",  "Delta" );
+	mIsTXInterface->AddNumber(0, "Echo", "Foxtrot");
+	mIsTXInterface->AddNumber(1, "Golf", "Hotel");
+	mIsTXInterface->SetNumber( mIsTX );
 
 	AddInterface( mInputChannelInterface.get() );
-	AddInterface( mBitRateInterface.get() );
+	AddInterface( mIsTXInterface.get() );
 
 	AddExportOption( 0, "Export as text/csv file" );
 	AddExportExtension( 0, "text", "txt" );
 	AddExportExtension( 0, "csv", "csv" );
 
 	ClearChannels();
-	AddChannel( mInputChannel, "Serial", false );
+	AddChannel( mInputChannel, "India", false );
 }
 
 TRX2AnalyzerSettings::~TRX2AnalyzerSettings()
@@ -34,10 +34,10 @@ TRX2AnalyzerSettings::~TRX2AnalyzerSettings()
 bool TRX2AnalyzerSettings::SetSettingsFromInterfaces()
 {
 	mInputChannel = mInputChannelInterface->GetChannel();
-	mBitRate = mBitRateInterface->GetInteger();
+	mIsTX = mIsTXInterface->GetNumber();
 
 	ClearChannels();
-	AddChannel( mInputChannel, "Realtek T/RX2", true );
+	AddChannel( mInputChannel, "Juliette", true );
 
 	return true;
 }
@@ -45,7 +45,7 @@ bool TRX2AnalyzerSettings::SetSettingsFromInterfaces()
 void TRX2AnalyzerSettings::UpdateInterfacesFromSettings()
 {
 	mInputChannelInterface->SetChannel( mInputChannel );
-	mBitRateInterface->SetInteger( mBitRate );
+	mIsTXInterface->SetNumber( mIsTX );
 }
 
 void TRX2AnalyzerSettings::LoadSettings( const char* settings )
@@ -54,10 +54,10 @@ void TRX2AnalyzerSettings::LoadSettings( const char* settings )
 	text_archive.SetString( settings );
 
 	text_archive >> mInputChannel;
-	text_archive >> mBitRate;
+	text_archive >> mIsTX;
 
 	ClearChannels();
-	AddChannel( mInputChannel, "Realtek T/RX2", true );
+	AddChannel( mInputChannel, "Kilo", true );
 
 	UpdateInterfacesFromSettings();
 }
@@ -67,7 +67,7 @@ const char* TRX2AnalyzerSettings::SaveSettings()
 	SimpleArchive text_archive;
 
 	text_archive << mInputChannel;
-	text_archive << mBitRate;
+	text_archive << mIsTX;
 
 	return SetReturnString( text_archive.GetString() );
 }

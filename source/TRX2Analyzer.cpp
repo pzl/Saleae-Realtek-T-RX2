@@ -23,14 +23,15 @@ void TRX2Analyzer::WorkerThread()
 
 	mSampleRateHz = GetSampleRate();
 
-	mSerial = GetAnalyzerChannelData( mSettings->mInputChannel );
+	mData = GetAnalyzerChannelData( mSettings->mInputChannel );
 
-	if( mSerial->GetBitState() == BIT_LOW )
-		mSerial->AdvanceToNextEdge();
+	if( mData->GetBitState() == BIT_LOW )
+		mData->AdvanceToNextEdge();
 
-	U32 samples_per_bit = mSampleRateHz / mSettings->mBitRate;
-	U32 samples_to_first_center_of_first_data_bit = U32( 1.5 * double( mSampleRateHz ) / double( mSettings->mBitRate ) );
 
+	
+
+/*
 	for( ; ; )
 	{
 		U8 data = 0;
@@ -67,6 +68,7 @@ void TRX2Analyzer::WorkerThread()
 		mResults->CommitResults();
 		ReportProgress( frame.mEndingSampleInclusive );
 	}
+	*/
 }
 
 bool TRX2Analyzer::NeedsRerun()
@@ -87,7 +89,7 @@ U32 TRX2Analyzer::GenerateSimulationData( U64 minimum_sample_index, U32 device_s
 
 U32 TRX2Analyzer::GetMinimumSampleRateHz()
 {
-	return mSettings->mBitRate * 4;
+	return 8000;
 }
 
 const char* TRX2Analyzer::GetAnalyzerName() const

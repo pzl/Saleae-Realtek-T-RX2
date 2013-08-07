@@ -20,10 +20,10 @@ protected:
 
 protected:
 	void CreateSerialByte();
-	std::string mSerialText;
+	std::string mDataText;
 	U32 mStringIndex;
 
-	SimulationChannelDescriptor mSerialSimulationData;
+	SimulationChannelDescriptor mX2SimulationData;
 
 };
 #endif //TRX2_SIMULATION_DATA_GENERATOR

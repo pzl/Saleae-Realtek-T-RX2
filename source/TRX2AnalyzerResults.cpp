@@ -18,16 +18,19 @@ TRX2AnalyzerResults::~TRX2AnalyzerResults()
 
 void TRX2AnalyzerResults::GenerateBubbleText( U64 frame_index, Channel& channel, DisplayBase display_base )
 {
+	/*
 	ClearResultStrings();
 	Frame frame = GetFrame( frame_index );
 
 	char number_str[128];
 	AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 8, number_str, 128 );
 	AddResultString( number_str );
+	*/
 }
 
 void TRX2AnalyzerResults::GenerateExportFile( const char* file, DisplayBase display_base, U32 export_type_user_id )
 {
+/*
 	std::ofstream file_stream( file, std::ios::out );
 
 	U64 trigger_sample = mAnalyzer->GetTriggerSample();
@@ -56,16 +59,19 @@ void TRX2AnalyzerResults::GenerateExportFile( const char* file, DisplayBase disp
 	}
 
 	file_stream.close();
+	*/
 }
 
 void TRX2AnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBase display_base )
 {
+/*
 	Frame frame = GetFrame( frame_index );
 	ClearResultStrings();
 
 	char number_str[128];
 	AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 8, number_str, 128 );
 	AddResultString( number_str );
+	*/
 }
 
 void TRX2AnalyzerResults::GeneratePacketTabularText( U64 packet_id, DisplayBase display_base )

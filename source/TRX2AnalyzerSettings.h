@@ -17,11 +17,11 @@ public:
 
 	
 	Channel mInputChannel;
-	U32 mBitRate;
+	bool mIsTX;
 
 protected:
 	std::auto_ptr< AnalyzerSettingInterfaceChannel >	mInputChannelInterface;
-	std::auto_ptr< AnalyzerSettingInterfaceInteger >	mBitRateInterface;
+	std::auto_ptr< AnalyzerSettingInterfaceNumberList >	mIsTXInterface;
 };
 
 #endif //TRX2_ANALYZER_SETTINGS

@@ -22,7 +22,7 @@ public:
 protected: //vars
 	std::auto_ptr< TRX2AnalyzerSettings > mSettings;
 	std::auto_ptr< TRX2AnalyzerResults > mResults;
-	AnalyzerChannelData* mSerial;
+	AnalyzerChannelData* mData;
 
 	TRX2SimulationDataGenerator mSimulationDataGenerator;
 	bool mSimulationInitilized;
