@@ -4,8 +4,6 @@
 #include <AnalyzerHelpers.h>
 
 TRX2SimulationDataGenerator::TRX2SimulationDataGenerator()
-:	mDataText( "My first analyzer, woo hoo!" ),
-	mStringIndex( 0 )
 {
 }
 
@@ -20,7 +18,7 @@ void TRX2SimulationDataGenerator::Initialize( U32 simulation_sample_rate, TRX2An
 
 	mX2SimulationData.SetChannel( mSettings->mInputChannel );
 	mX2SimulationData.SetSampleRate( simulation_sample_rate );
-	mX2SimulationData.SetInitialBitState( BIT_HIGH );
+	mX2SimulationData.SetInitialBitState( BIT_LOW );
 }
 
 U32 TRX2SimulationDataGenerator::GenerateSimulationData( U64 largest_sample_requested, U32 sample_rate, SimulationChannelDescriptor** simulation_channel )
@@ -29,43 +27,46 @@ U32 TRX2SimulationDataGenerator::GenerateSimulationData( U64 largest_sample_requ
 
 	while( mX2SimulationData.GetCurrentSampleNumber() < adjusted_largest_sample_requested )
 	{
-		CreateSerialByte();
+		MakeFakeData();
 	}
 
 	*simulation_channel = &mX2SimulationData;
 	return 1;
 }
 
-void TRX2SimulationDataGenerator::CreateSerialByte()
+void TRX2SimulationDataGenerator::MakeFakeData()
 {
-	U32 samples_per_bit = mSimulationSampleRateHz / 8000;
-
-	U8 byte = mDataText[ mStringIndex ];
-	mStringIndex++;
-	if( mStringIndex == mDataText.size() )
-		mStringIndex = 0;
-
-	//we're currenty high
+	//we're currenty low
 	//let's move forward a little
-	mX2SimulationData.Advance( samples_per_bit * 10 );
+	mX2SimulationData.Advance( mSimulationSampleRateHz * .003 );
+	
+	StartCode();
+	CommandCode(10);
+	StartCode();
+	CommandCode(58);
+	StartCode();
+	CommandCode(10);
+	StartCode();
+	CommandCode(64);
+	
+}
 
-	mX2SimulationData.Transition();  //low-going edge for start bit
-	mX2SimulationData.Advance( samples_per_bit );  //add start bit time
-
-	U8 mask = 0x1 << 7;
-	for( U32 i=0; i<8; i++ )
-	{
-		if( ( byte & mask ) != 0 )
-			mX2SimulationData.TransitionIfNeeded( BIT_HIGH );
-		else
-			mX2SimulationData.TransitionIfNeeded( BIT_LOW );
-
-		mX2SimulationData.Advance( samples_per_bit );
-		mask = mask >> 1;
+void TRX2SimulationDataGenerator::CommandCode(U32 opcode)
+{
+	for (U32 i=0; i<opcode; i++){
+		mX2SimulationData.TransitionIfNeeded(BIT_HIGH);
+		mX2SimulationData.Advance(mSimulationSampleRateHz * .000333);
+		mX2SimulationData.Transition();
+		mX2SimulationData.Advance(mSimulationSampleRateHz * .00033);
 	}
+}
 
-	mX2SimulationData.TransitionIfNeeded( BIT_HIGH ); //we need to end high
-
-	//lets pad the end a bit for the stop bit:
-	mX2SimulationData.Advance( samples_per_bit );
+void TRX2SimulationDataGenerator::StartCode()
+{
+	for (U32 i=0; i<4; i++){
+		mX2SimulationData.TransitionIfNeeded(BIT_HIGH);
+		mX2SimulationData.Advance(mSimulationSampleRateHz * .001);
+		mX2SimulationData.Transition();
+		mX2SimulationData.Advance(mSimulationSampleRateHz * .00033);
+	}
 }

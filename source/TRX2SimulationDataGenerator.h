@@ -19,9 +19,9 @@ protected:
 	U32 mSimulationSampleRateHz;
 
 protected:
-	void CreateSerialByte();
-	std::string mDataText;
-	U32 mStringIndex;
+	void MakeFakeData();
+	void StartCode();
+	void CommandCode(U32 opcode);
 
 	SimulationChannelDescriptor mX2SimulationData;
 
