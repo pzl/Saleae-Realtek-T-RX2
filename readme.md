@@ -20,7 +20,7 @@ After capturing data from The TX2's SO pin, or the receiving circuit / input on 
 
 The plugin will then place a green "start" marker at the start of every header. A data bubble is placed above the command portion of the packet with the command number sent.
 
-
+![analyzer](http://pzl.github.io/Saleae-Realtek-T-RX2/TRX2-analyzer.png)
 
 As-is
 ------
