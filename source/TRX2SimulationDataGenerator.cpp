@@ -36,14 +36,20 @@ U32 TRX2SimulationDataGenerator::GenerateSimulationData( U64 largest_sample_requ
 
 void TRX2SimulationDataGenerator::MakeFakeData()
 {
+	CommandCode codes[] = {FORWARD, BACKWARD, LEFT, RIGHT, FORWARD_LEFT, FORWARD_RIGHT, BACKWARD_LEFT, BACKWARD_RIGHT};
+	U8 command = 0;
+
 	//we're currenty low
 	//let's move forward a little
 	mX2SimulationData.Advance( mSimulationSampleRateHz * .003 );
 	
-	GenCommandCode(FORWARD);
-	GenCommandCode(FORWARD_LEFT);
-	GenCommandCode(FORWARD);
-	GenCommandCode(FORWARD_RIGHT);
+	command = (int)(rand()%8);
+	
+	//repeat command 0-9 times
+	for (U8 i=0; i<(int)(rand()%10); i++){
+		GenCommandCode(codes[command]);
+	}
+
 	
 }
 
