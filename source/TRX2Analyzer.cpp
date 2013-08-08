@@ -27,8 +27,67 @@ void TRX2Analyzer::WorkerThread()
 
 	if( mData->GetBitState() == BIT_LOW )
 		mData->AdvanceToNextEdge();
+	
 
+		U8 blips = 0;
+		U64 previous_edge = 0;
+		U64 control_edge_start=0;
 
+	for ( ; ; ) {
+		
+		U64 starting_sample = mData->GetSampleNumber();
+		U8 data = 0;
+		
+		if (mData->GetBitState() == BIT_HIGH){
+			if ( mData->GetSampleOfNextEdge() - starting_sample > mSampleRateHz * .0005){
+				if (blips > 0){
+					Frame frame;
+					frame.mFlags = 0;
+					frame.mData1 = blips;
+					frame.mType = 1;
+					frame.mStartingSampleInclusive = control_edge_start;
+					frame.mEndingSampleInclusive = previous_edge + mSampleRateHz*.000333;
+					
+					mResults->AddFrame(frame);
+					mResults->CommitResults();
+					ReportProgress(frame.mEndingSampleInclusive);
+				
+					//mResults->AddMarker(previous_edge + mSampleRateHz*.000333, AnalyzerResults::Stop, mSettings->mInputChannel);
+					blips = 0;
+				}
+
+				mResults->AddMarker(starting_sample, AnalyzerResults::Start, mSettings->mInputChannel);
+				for (U32 i=0; i<8; i++){
+					mData->AdvanceToNextEdge();
+				}
+				
+				
+				Frame begin;
+				begin.mFlags = 0;
+				begin.mType = 0;
+				begin.mStartingSampleInclusive = starting_sample;
+				begin.mEndingSampleInclusive = mData->GetSampleNumber();
+				
+				mResults->AddFrame(begin);
+				mResults->CommitResults();
+				ReportProgress(begin.mEndingSampleInclusive);
+				
+				
+			} else {
+				if (blips == 0){
+					control_edge_start=starting_sample;
+				}
+				blips++;
+				mData->AdvanceToNextEdge();
+				mResults->AddMarker(mData->GetSampleNumber()-mSampleRateHz*(.00033/2), AnalyzerResults::Dot, mSettings->mInputChannel);
+				mData->AdvanceToNextEdge();
+			}
+		} else {
+			blips=0;
+			mData->AdvanceToNextEdge();
+		}
+		previous_edge = starting_sample;
+	}
 	
 
 /*
@@ -89,7 +148,7 @@ U32 TRX2Analyzer::GenerateSimulationData( U64 minimum_sample_index, U32 device_s
 
 U32 TRX2Analyzer::GetMinimumSampleRateHz()
 {
-	return 8000;
+	return 2000*4; //2KHz quickest transition, 4x sampling
 }
 
 const char* TRX2Analyzer::GetAnalyzerName() const
