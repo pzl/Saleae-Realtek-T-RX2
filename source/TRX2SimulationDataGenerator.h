@@ -20,10 +20,13 @@ protected:
 
 protected:
 	void MakeFakeData();
-	void StartCode();
-	void CommandCode(U32 opcode);
+	void GenStartCode();
+	void GenCommandCode(U32 opcode);
 
 	SimulationChannelDescriptor mX2SimulationData;
 
 };
+
+enum CommandCode { FORWARD = 10, FORWARD_TURBO=16, TURBO=22, FORWARD_LEFT=28, FORWARD_RIGHT=34, BACKWARD=40, BACKWARD_RIGHT=46, BACKWARD_LEFT=52, LEFT=58, RIGHT=64 };
+
 #endif //TRX2_SIMULATION_DATA_GENERATOR

@@ -40,19 +40,16 @@ void TRX2SimulationDataGenerator::MakeFakeData()
 	//let's move forward a little
 	mX2SimulationData.Advance( mSimulationSampleRateHz * .003 );
 	
-	StartCode();
-	CommandCode(10);
-	StartCode();
-	CommandCode(58);
-	StartCode();
-	CommandCode(10);
-	StartCode();
-	CommandCode(64);
+	GenCommandCode(FORWARD);
+	GenCommandCode(FORWARD_LEFT);
+	GenCommandCode(FORWARD);
+	GenCommandCode(FORWARD_RIGHT);
 	
 }
 
-void TRX2SimulationDataGenerator::CommandCode(U32 opcode)
+void TRX2SimulationDataGenerator::GenCommandCode(U32 opcode)
 {
+	GenStartCode();
 	for (U32 i=0; i<opcode; i++){
 		mX2SimulationData.TransitionIfNeeded(BIT_HIGH);
 		mX2SimulationData.Advance(mSimulationSampleRateHz * .000333);
@@ -61,7 +58,7 @@ void TRX2SimulationDataGenerator::CommandCode(U32 opcode)
 	}
 }
 
-void TRX2SimulationDataGenerator::StartCode()
+void TRX2SimulationDataGenerator::GenStartCode()
 {
 	for (U32 i=0; i<4; i++){
 		mX2SimulationData.TransitionIfNeeded(BIT_HIGH);
